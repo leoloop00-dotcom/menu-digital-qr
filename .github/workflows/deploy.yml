@@ -1,4 +1,4 @@
-name: Deploy to Railway
+name: Deploy to Render
 
 on:
   push:
@@ -11,10 +11,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Install Railway CLI
-        run: npm install -g @railway/cli
-      
-      - name: Deploy
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: railway deploy --token ${{ secrets.RAILWAY_TOKEN }}
+      - name: Deploy to Render
+        uses: render-deploy-action@v1
+        with:
+          apiKey: ${{ secrets.RENDER_API_KEY }}
+          blueprint: render.yaml
