@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - {{ restaurante.nombre }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { 'poppins': ['Poppins', 'sans-serif'] },
+                    colors: {
+                        primary: '#DC2626',
+                        secondary: '#1F2937',
+                        accent: '#F59E0B'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { font-family: 'Poppins', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    
+    <header class="bg-secondary text-white py-4 px-6 shadow-lg">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <span class="text-2xl">⚙️</span>
+                <h1 class="text-xl font-bold">Panel de Administración</h1>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="/" class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg transition">👁️ Ver Menú</a>
+                <span class="text-white/70 text-sm">{{ restaurante.nombre }}</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        
+        <!-- Formulario agregar/editar -->
+        <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
+            <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                <span id="form-title">➕ Agregar Producto</span>
+            </h2>
+            
+            <form id="producto-form" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <input type="hidden" id="producto-id" value="">
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nombre *</label>
+                    <input type="text" id="nombre" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Precio *</label>
+                    <input type="number" id="precio" required min="0" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Categoría *</label>
+                    <select id="categoria" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                        {% for cat in categorias %}
+                        <option value="{{ cat.id }}">{{ cat.icono }} {{ cat.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">URL Imagen</label>
+                    <input type="url" id="imagen" placeholder="https://..." class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                </div>
+                
+                <div class="md:col-span-2 lg:col-span-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
+                    <input type="text" id="descripcion" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                </div>
+                
+                <div class="md:col-span-2 lg:col-span-4 flex gap-3">
+                    <button type="submit" class="bg-primary hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition">
+                        💾 Guardar
+                    </button>
+                    <button type="button" onclick="resetForm()" class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-6 py-3 rounded-lg font-semibold transition">
+                        🔄 Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Lista de productos -->
+        <div class="bg-white rounded-2xl shadow-lg p-6">
+            <h2 class="text-xl font-bold mb-4">📋 Productos ({{ productos|length }})</h2>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="px-4 py-3 text-left">Imagen</th>
+                            <th class="px-4 py-3 text-left">Nombre</th>
+                            <th class="px-4 py-3 text-left">Categoría</th>
+                            <th class="px-4 py-3 text-right">Precio</th>
+                            <th class="px-4 py-3 text-left">Descripción</th>
+                            <th class="px-4 py-3 text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productos-lista">
+                        {% for prod in productos %}
+                        <tr class="border-b hover:bg-gray-50" data-id="{{ prod.id }}">
+                            <td class="px-4 py-3">
+                                {% if prod.imagen %}
+                                <img src="{{ prod.imagen }}" alt="{{ prod.nombre }}" class="w-12 h-12 object-cover rounded-lg">
+                                {% else %}
+                                <div class="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center">🍽️</div>
+                                {% endif %}
+                            </td>
+                            <td class="px-4 py-3 font-medium">{{ prod.nombre }}</td>
+                            <td class="px-4 py-3">
+                                {% for cat in categorias %}
+                                {% if cat.id == prod.categoria %}
+                                <span class="inline-block bg-gray-100 px-2 py-1 rounded text-sm">{{ cat.icono }} {{ cat.nombre }}</span>
+                                {% endif %}
+                                {% endfor %}
+                            </td>
+                            <td class="px-4 py-3 text-right font-bold text-primary">${{ prod.precio }}</td>
+                            <td class="px-4 py-3 text-gray-500 text-sm">{{ prod.descripcion }}</td>
+                            <td class="px-4 py-3 text-center">
+                                <button onclick="editarProducto({{ prod.id }})" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg text-sm mr-2 transition">✏️</button>
+                                <button onclick="eliminarProducto({{ prod.id }})" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm transition">🗑️</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Estadísticas -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+            <div class="bg-white rounded-2xl shadow-lg p-6 text-center">
+                <div class="text-4xl mb-2">🍽️</div>
+                <div class="text-3xl font-bold text-primary">{{ productos|length }}</div>
+                <div class="text-gray-500">Productos</div>
+            </div>
+            <div class="bg-white rounded-2xl shadow-lg p-6 text-center">
+                <div class="text-4xl mb-2">📂</div>
+                <div class="text-3xl font-bold text-primary">{{ categorias|length }}</div>
+                <div class="text-gray-500">Categorías</div>
+            </div>
+            <div class="bg-white rounded-2xl shadow-lg p-6 text-center">
+                <div class="text-4xl mb-2">💰</div>
+                <div class="text-3xl font-bold text-primary">${{ productos|total_precio }}</div>
+                <div class="text-gray-500">Valor Total</div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let productos = {{ productos|tojson }};
+        let categorias = {{ categorias|tojson }};
+
+        function editarProducto(id) {
+            const prod = productos.find(p => p.id === id);
+            if (!prod) return;
+
+            document.getElementById('producto-id').value = prod.id;
+            document.getElementById('nombre').value = prod.nombre;
+            document.getElementById('precio').value = prod.precio;
+            document.getElementById('categoria').value = prod.categoria;
+            document.getElementById('imagen').value = prod.imagen || '';
+            document.getElementById('descripcion').value = prod.descripcion || '';
+            document.getElementById('form-title').textContent = '✏️ Editar Producto';
+            
+            document.getElementById('nombre').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function eliminarProducto(id) {
+            if (!confirm('¿Eliminar este producto?')) return;
+            
+            fetch(`/api/productos/${id}`, { method: 'DELETE' })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) location.reload();
+                });
+        }
+
+        function resetForm() {
+            document.getElementById('producto-form').reset();
+            document.getElementById('producto-id').value = '';
+            document.getElementById('form-title').textContent = '➕ Agregar Producto';
+        }
+
+        document.getElementById('producto-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('producto-id').value;
+            const producto = {
+                nombre: document.getElementById('nombre').value,
+                precio: parseInt(document.getElementById('precio').value),
+                categoria: parseInt(document.getElementById('categoria').value),
+                descripcion: document.getElementById('descripcion').value,
+                imagen: document.getElementById('imagen').value
+            };
+
+            const method = id ? 'PUT' : 'POST';
+            const url = id ? `/api/productos/${id}` : '/api/productos';
+
+            fetch(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(producto)
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) location.reload();
+                else alert('Error: ' + data.error);
+            });
+        });
+    </script>
+</body>
+</html>

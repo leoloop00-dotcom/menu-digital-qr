@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ restaurante.nombre }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { 'poppins': ['Poppins', 'sans-serif'] },
+                    colors: {
+                        primary: '#DC2626',
+                        secondary: '#1F2937',
+                        accent: '#F59E0B'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { font-family: 'Poppins', sans-serif; }
+        
+        /* Animaciones suaves */
+        .fade-in { animation: fadeIn 0.5s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .slide-up { animation: slideUp 0.4s ease-out; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(100%); } to { opacity: 1; transform: translateY(0); } }
+        
+        .pulse-once { animation: pulseOnce 0.5s ease; }
+        @keyframes pulseOnce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        
+        /* Scroll suave */
+        html { scroll-behavior: smooth; }
+        
+        /* Carrito mejorado */
+        .carrito-fixed {
+            backdrop-filter: blur(10px);
+            background: rgba(220, 38, 38, 0.95);
+        }
+        
+        /* Tarjetas de producto */
+        .product-card {
+            transition: all 0.3s ease;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        /* Botón agregar */
+        .btn-agregar {
+            transition: all 0.2s ease;
+        }
+        .btn-agregar:hover {
+            transform: scale(1.1);
+        }
+        .btn-agregar:active {
+            transform: scale(0.95);
+        }
+        
+        /* Categorías */
+        .cat-btn {
+            transition: all 0.2s ease;
+        }
+        .cat-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Toast notificación */
+        .toast {
+            animation: toastIn 0.3s ease, toastOut 0.3s ease 1.7s forwards;
+        }
+        @keyframes toastIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes toastOut { from { opacity: 1; } to { opacity: 0; } }
+        
+        /* Imagen placeholder con gradiente */
+        .food-placeholder {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        /* Scrollbar personalizado */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #DC2626; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen font-poppins">
+    
+    <!-- Header con imagen de fondo -->
+    <header class="relative h-48 md:h-56 bg-gradient-to-r from-primary via-red-600 to-red-700 overflow-hidden">
+        <div class="absolute inset-0 bg-black opacity-20"></div>
+        <div class="absolute inset-0 flex flex-col items-center justify-center text-white text-center px-4">
+            <div class="mb-2">
+                <span class="text-5xl">🍽️</span>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold mb-2 drop-shadow-lg">{{ restaurante.nombre }}</h1>
+            <p class="text-white/90 text-sm md:text-base" id="mesa-info">✨ Menú Digital - Escanea el QR en tu mesa</p>
+        </div>
+        <!-- Decoración ondas -->
+        <div class="absolute bottom-0 left-0 right-0">
+            <svg viewBox="0 0 1440 120" fill="none"><path d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="#f9fafb"/></svg>
+        </div>
+    </header>
+
+    <!-- Toast de notificación -->
+    <div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-6 py-3 rounded-full shadow-lg z-50 hidden font-semibold">
+        ✅ ¡Agregado al pedido!
+    </div>
+
+    <!-- Categorías -->
+    <div class="sticky top-0 bg-white shadow-md z-40 py-3">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+                <button onclick="mostrarTodos()" id="btn-todos" class="cat-btn flex-shrink-0 bg-secondary text-white rounded-full px-5 py-2.5 font-semibold text-sm shadow-md">
+                    ✨ Ver todo
+                </button>
+                {% for cat in categorias %}
+                <button onclick="filtrar({{ cat.id }})" id="btn-{{ cat.id }}" class="cat-btn flex-shrink-0 bg-white border-2 border-gray-200 text-gray-700 rounded-full px-5 py-2.5 font-medium text-sm hover:border-primary hover:text-primary transition">
+                    {{ cat.icono }} {{ cat.nombre }}
+                </button>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Productos -->
+    <main class="max-w-7xl mx-auto px-4 py-6 pb-32">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for prod in productos %}
+            <div class="product-card fade-in bg-white rounded-2xl shadow-md overflow-hidden" data-categoria="{{ prod.categoria }}">
+                <!-- Imagen del producto -->
+                <div class="h-36 relative overflow-hidden">
+                    <img src="{{ prod.imagen }}" alt="{{ prod.nombre }}" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="absolute inset-0 food-placeholder hidden items-center justify-center text-white text-5xl opacity-50">
+                        🍽️
+                    </div>
+                    <div class="absolute top-3 right-3 bg-white/90 backdrop-blur px-3 py-1 rounded-full shadow">
+                        <span class="text-primary font-bold text-lg">${{ prod.precio }}</span>
+                    </div>
+                </div>
+                
+                <!-- Contenido -->
+                <div class="p-5">
+                    <h3 class="font-bold text-lg text-gray-800 mb-1">{{ prod.nombre }}</h3>
+                    <p class="text-gray-500 text-sm mb-4">{{ prod.descripcion }}</p>
+                    
+                    <button onclick="agregar({{ prod.id }}, '{{ prod.nombre }}', {{ prod.precio }})" 
+                        class="btn-agregar w-full bg-primary hover:bg-red-700 text-white py-3 rounded-xl font-semibold transition flex items-center justify-center gap-2 shadow-md">
+                        <span>🛒</span>
+                        <span>Agregar al pedido</span>
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+
+    <!-- Carrito flotante -->
+    <div id="carrito" class="fixed bottom-0 left-0 right-0 carrito-fixed slide-up text-white p-4 shadow-2xl z-50 hidden">
+        <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+                <div class="bg-white/20 p-3 rounded-full">
+                    <span class="text-2xl">🛒</span>
+                </div>
+                <div>
+                    <p class="text-white/70 text-sm">Tu pedido</p>
+                    <p class="font-bold text-xl"><span id="contador">0</span> items</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <div class="text-right">
+                    <p class="text-white/70 text-sm">Total</p>
+                    <p class="font-bold text-2xl">$<span id="total">0</span></p>
+                </div>
+                
+                <button onclick="enviarPedido()" class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-xl font-bold shadow-lg transition flex items-center gap-2">
+                    <span>📱</span>
+                    <span>Enviar WhatsApp</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmación -->
+    <div id="modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl">
+            <div class="text-center">
+                <div class="text-6xl mb-4">📱</div>
+                <h3 class="text-xl font-bold mb-2">¿Enviar pedido?</h3>
+                <p class="text-gray-500 mb-6">Se abrirá WhatsApp con tu pedido</p>
+                
+                <div class="flex gap-3">
+                    <button onclick="cerrarModal()" class="flex-1 bg-gray-200 text-gray-700 py-3 rounded-xl font-semibold">Cancelar</button>
+                    <button onclick="confirmarEnvio()" class="flex-1 bg-green-500 text-white py-3 rounded-xl font-semibold">Enviar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/script.js"></script>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const mesa = params.get('mesa');
+        if (mesa) {
+            document.getElementById('mesa-info').textContent = `🍽️ Mesa ${mesa}`;
+            window.mesaActual = mesa;
+        }
+    </script>
+</body>
+</html>
