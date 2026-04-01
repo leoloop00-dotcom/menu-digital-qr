@@ -1,24 +1,109 @@
 {
   "categorias": [
-    {"id": 1, "nombre": "Entradas", "icono": "🍽️"},
-    {"id": 2, "nombre": "Principales", "icono": "🍝"},
-    {"id": 3, "nombre": "Bebidas", "icono": "🥤"},
-    {"id": 4, "nombre": "Postres", "icono": "🍰"}
+    {
+      "id": 1,
+      "nombre": "Entradas",
+      "icono": "🍽️"
+    },
+    {
+      "id": 2,
+      "nombre": "Principales",
+      "icono": "🍝"
+    },
+    {
+      "id": 3,
+      "nombre": "Bebidas",
+      "icono": "🥤"
+    },
+    {
+      "id": 4,
+      "nombre": "Postres",
+      "icono": "🍰"
+    }
   ],
   "productos": [
-    {"id": 1, "categoria": 1, "nombre": "Ensalada César", "precio": 85, "descripcion": "Lechuga, crutones, parmesano", "imagen": "https://images.unsplash.com/photo-1546793665-c74683f339c1?w=400&h=300&fit=crop"},
-    {"id": 2, "categoria": 1, "nombre": "Sopa del día", "precio": 45, "descripcion": "Consulta al mesero", "imagen": "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400&h=300&fit=crop"},
-    {"id": 3, "categoria": 2, "nombre": "Pasta Carbonara", "precio": 120, "descripcion": "Salsa cremosa con tocino", "imagen": "https://images.unsplash.com/photo-1612874742237-6526221588e3?w=400&h=300&fit=crop"},
-    {"id": 4, "categoria": 2, "nombre": "Pollo a la Plancha", "precio": 135, "descripcion": "Con verduras asadas", "imagen": "https://images.unsplash.com/photo-1432139555190-58524dae6a55?w=400&h=300&fit=crop"},
-    {"id": 5, "categoria": 3, "nombre": "Refresco", "precio": 25, "descripcion": "Coca, Sprite, Fanta", "imagen": "https://images.unsplash.com/photo-1581636625402-29b2a704ef13?w=400&h=300&fit=crop"},
-    {"id": 6, "categoria": 3, "nombre": "Jugo Natural", "precio": 35, "descripcion": "Naranja, limón, uva", "imagen": "https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=400&h=300&fit=crop"},
-    {"id": 7, "categoria": 4, "nombre": "Flan", "precio": 45, "descripcion": "Con caramelo", "imagen": "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=400&h=300&fit=crop"},
-    {"id": 8, "categoria": 4, "nombre": "Helado", "precio": 55, "descripcion": "3 bolas a elegir", "imagen": "https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=400&h=300&fit=crop"}
+    {
+      "id": 1,
+      "categoria": 1,
+      "nombre": "Ensalada César",
+      "precio": 85,
+      "descripcion": "Lechuga, crutones, parmesano",
+      "imagen": "https://images.unsplash.com/photo-1546793665-c74683f339c1?w=400&h=300&fit=crop"
+    },
+    {
+      "id": 2,
+      "categoria": 1,
+      "nombre": "Sopa del día",
+      "precio": 45,
+      "descripcion": "Consulta al mesero",
+      "imagen": "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400&h=300&fit=crop"
+    },
+    {
+      "id": 3,
+      "categoria": 2,
+      "nombre": "Pasta Carbonara",
+      "precio": 120,
+      "descripcion": "Salsa cremosa con tocino",
+      "imagen": "https://images.unsplash.com/photo-1612874742237-6526221588e3?w=400&h=300&fit=crop"
+    },
+    {
+      "id": 4,
+      "categoria": 2,
+      "nombre": "Pollo a la Plancha",
+      "precio": 135,
+      "descripcion": "Con verduras asadas",
+      "imagen": "https://images.unsplash.com/photo-1432139555190-58524dae6a55?w=400&h=300&fit=crop"
+    },
+    {
+      "id": 5,
+      "categoria": 3,
+      "nombre": "Refresco",
+      "precio": 25,
+      "descripcion": "Coca, Sprite, Fanta",
+      "imagen": "https://images.unsplash.com/photo-1581636625402-29b2a704ef13?w=400&h=300&fit=crop"
+    },
+    {
+      "id": 6,
+      "categoria": 3,
+      "nombre": "Jugo Natural",
+      "precio": 35,
+      "descripcion": "Naranja, limón, uva",
+      "imagen": "https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=400&h=300&fit=crop"
+    },
+    {
+      "id": 7,
+      "categoria": 4,
+      "nombre": "Flan",
+      "precio": 45,
+      "descripcion": "Con caramelo",
+      "imagen": "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=400&h=300&fit=crop"
+    },
+    {
+      "id": 8,
+      "categoria": 4,
+      "nombre": "Helado",
+      "precio": 55,
+      "descripcion": "3 bolas a elegir",
+      "imagen": "https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=400&h=300&fit=crop"
+    },
+    {
+      "categoria": 1,
+      "descripcion": "Test",
+      "imagen": "",
+      "nombre": "Test",
+      "precio": 100,
+      "id": 9
+    }
   ],
   "restaurante": {
     "nombre": "Restaurante Ejemplo",
     "telefono": "+521234567890",
     "whatsapp": "521234567890"
   },
-  "mesas": []
+  "mesas": [
+    {
+      "nombre": "Test Mesa",
+      "numero": 1
+    }
+  ]
 }
