@@ -1,4 +1,4 @@
-name: Deploy to Render
+name: Test & Deploy
 
 on:
   push:
@@ -6,12 +6,25 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      
+      - name: Test Flask app
+        run: |
+          python -c "from app import app; print('OK')"
+      
       - name: Deploy to Render
+        if: github.event_name == 'workflow_dispatch'
         uses: render-deploy-action@v1
         with:
           apiKey: ${{ secrets.RENDER_API_KEY }}
